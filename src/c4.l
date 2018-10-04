@@ -2,6 +2,7 @@
     #pragma ident "c4.l,v 1.21 1995/05/11 18:54:14 rcm Exp" //将指定的字符串放在可执行文件的 .comment 部分。https://blog.csdn.net/lowfly_xy/article/details/5414041
     
     //#include <ctype.h>
+    #define DEBUG
     #include "ast.h"
 
     #define DEBUGLEX
@@ -24,10 +25,13 @@ exponent_part ([eE][-+]?[0-9]+)
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
 /*浮点字面值可以用十进制或科学计数法（指数用E或e）表示，默认为double，在数值后加F或f表示单精度，加L或l表示扩展精度*/
 floating_constant ((({fractional_constant}{exponent_part}?)|([0-9]+{exponent_part}))[FfLl]?)
-
+/*参见1.lex.md, u 代表unsigned int的数字; l 代表 long的数字 */
 integer_suffix_opt ([uU]?[lL]?[lL]?)|([lL][uU][lL]?)|([lL][lL][uU])
+/*10进制数字,例如123456 */
 decimal_constant ("0"{integer_suffix_opt}|[1-9][0-9]*{integer_suffix_opt})
-octal_constant ("0"[0-7]*{integer_suffix_opt})
+/* 8进制数字 */
+octal_constant ("0"[0-7]*{integer_suffix_opt}) 
+/* 16进制数字 */
 hex_constant ("0"[xX][0-9a-fA-F]+{integer_suffix_opt})
 
 simple_escape ([abfnrtv'"?\\])
@@ -39,11 +43,11 @@ escape_sequence ([\\]({simple_escape}|{octal_escape}|{hex_escape}))
 c_char ([^'\\\n]|{escape_sequence})
 s_char ([^"\\\n]|{escape_sequence})
 
+/*第一个是空格 \011 tab \013回车 \014 */
 any_white ([ \011\013\014\015])
-hwhite ([ \011])
 
 %%
-
+<INITIAL,C>{any_white}+          {  debug("any_white");  }
 <INITIAL,C>.*                    {   char tmp[20];
                                     CharToText(tmp, *yytext); //这一行暂且不用了
                                     SyntaxError("Unexpected character: %s \n", yytext); }
