@@ -42,3 +42,5 @@ endif
 
 clean :
 	@$(RM) lex.c lex.yy.c parser.c y.tab.[ch] y.output *.o  bin/* *.d *.out
+count : 
+	find . -maxdepth 1  -name "*[.l|.c|.h|Makefile]"  | xargs cat | wc -l
