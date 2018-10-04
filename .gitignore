@@ -13,3 +13,4 @@ src/parser.c
 *~
 *.bak
 src/bin
+src/a

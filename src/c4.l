@@ -20,8 +20,9 @@ identifier ([a-zA-Z_][0-9a-zA-Z_]*)
 
 /*指数部分,例如 e3 或 E-3*/
 exponent_part ([eE][-+]?[0-9]+)
-/*小数部分,例如123.456 或123. 或.*/
+/*小数部分,例如123.456 或123.或.123 注意 '123.'和'.123'这两种写法是符合标准的,但是看起来很奇怪所以不推荐后来这样写,建议替换为为'123.0'和'0.123'*/
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
+/*浮点字面值可以用十进制或科学计数法（指数用E或e）表示，默认为double，在数值后加F或f表示单精度，加L或l表示扩展精度*/
 floating_constant ((({fractional_constant}{exponent_part}?)|([0-9]+{exponent_part}))[FfLl]?)
 
 integer_suffix_opt ([uU]?[lL]?[lL]?)|([lL][uU][lL]?)|([lL][lL][uU])
@@ -43,11 +44,18 @@ hwhite ([ \011])
 
 %%
 
-<INITIAL,C>.                    {   char tmp[20];
-                                    CharToText(tmp, *yytext);
-                                    SyntaxError("Unexpected character: %s", tmp); }
+<INITIAL,C>.*                    {   char tmp[20];
+                                    CharToText(tmp, *yytext); //这一行暂且不用了
+                                    SyntaxError("Unexpected character: %s \n", yytext); }
 
 %%
+
+/*****第1步,获取文件名****/
+GLOBAL char *Filename;
+GLOBAL char *FileNames[MAX_FILES] = {"unknown"};
+GLOBAL void SetFile(const char *name, int line){
+  return ;
+} 
 
 /*获取 coordinates(坐标) , 即该匹配的单词的行好 line 和偏移 offset*/
 /*PRIVATE inline void GetCoord(Coord *pcoord)
@@ -68,7 +76,6 @@ hwhite ([ \011])
   pcoord->offset = offset;
 }
 */
-GLOBAL char *Filename;
 
 int main(){
     yylex();

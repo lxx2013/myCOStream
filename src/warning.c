@@ -1,5 +1,5 @@
+#define DEBUG
 #include "basics.h"
-
 #ifndef NO_STDARG
    #include <stdarg.h>
    #define VA_START(ap,fmt)   va_start(ap,fmt)
@@ -17,10 +17,12 @@ GLOBAL void SyntaxError(const char *fmt, ...)
 {
     va_list ap;
     VA_START(ap, fmt);
-    
     Errors++;
-    fprintf(stderr, "%s:%d: ", Filename, Line);
-    vfprintf(stderr, fmt, ap);
-    fputc('\n', stderr);
+    line("%s:%d: ", Filename, Line);
+    char Redfmt[100];//用于输出红色提示字符的 fmt
+    strcat(Redfmt,"\033[31m[ERROR]: ");
+    strcat(Redfmt,fmt);
+    strcat(Redfmt," \033[0m");
+    vprintf(Redfmt, ap);
     va_end(ap);
 }

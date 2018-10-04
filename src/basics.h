@@ -33,6 +33,8 @@
 /* Basic Global Variables */
 GLOBAL extern int Line, LineOffset, Errors, Warnings;    /* warning.c */
 GLOBAL extern char *Filename;                /* c4.l */
+#define MAX_FILES       256
+GLOBAL extern char *FileNames[MAX_FILES];    /* c4.l: file # to name mapping*/
 
 /* pretty-printing */
 void CharToText(char *array, unsigned char value);
