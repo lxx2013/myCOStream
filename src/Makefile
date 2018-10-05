@@ -2,29 +2,34 @@ CC      = gcc
 CXX		= g++
 YACC    = bison -y
 LEX     = flex
+CFLAGS  = -I include
+
 TAB = '	'
-VPATH = .:bin
+VPATH = .:bin:config
 PROGRAM := a
-SRCDIRS := .
+SRCDIRS := src
 OUTDIRS := bin
 SRCEXTS := .c .cpp   # SRC 目录里相关的文件后缀
 
 SHELL = /bin/sh
-SOURCES = $(foreach d,$(SRCEXTS),$(wildcard *$(d)))
-POBJ = lex.o
-OBJS = $(POBJ) $(foreach x,$(SRCEXTS),$(patsubst %$(x),%.o,$(filter %$(x),$(SOURCES))))
+SOURCES = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS))))
+POBJ = parser.o lexer.o
+OBJS = $(POBJ) $(foreach x,$(SRCEXTS),$(patsubst %$(x),%.o,$(notdir $(filter %$(x),$(SOURCES)))))
 
 # Rules for producing the executable.
 #----------------------------------------------
-all : lex.o $(PROGRAM)
-
-lex.o:  c4.l
+parser.o: parser.y
+	$(YACC) -v --defines=include/token.hh config/parser.y 
+	mv y.tab.c $(OUTDIRS)/parser.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DYYDEBUG -c $(OUTDIRS)/parser.c -o $(OUTDIRS)/parser.o
+lexer.o:  lexer.l
 	@echo SOURCES$(TAB)= ${SOURCES}
 	@echo OBJS$(TAB)= ${OBJS}
 	@mkdir -p bin
-	$(LEX) c4.l 
-	mv lex.yy.c bin/lex.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -I. -c bin/lex.c -o bin/lex.o
+	$(LEX) config/lexer.l 
+	mv lex.yy.c src/lexer.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c src/lexer.c -o bin/lexer.o
+
 
 objs : $(OBJS)
 %.o : %.c
@@ -32,6 +37,7 @@ objs : $(OBJS)
 %.o : %.cpp
 	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS)  -o $(OUTDIRS)/$@ $<
 
+all : $(PROGRAM)
 $(PROGRAM) : $(OBJS)
 ifeq ($(strip $(SRCEXTS)), .c) # C file
 	$(CC) -o $(PROGRAM) $(LDFLAGS) $(foreach d,$(OBJS),$(addprefix $(OUTDIRS)/,$(d)))

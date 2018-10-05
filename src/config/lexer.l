@@ -4,13 +4,21 @@
     //#include <ctype.h>
     #define DEBUG
     #include "ast.h"
-
-    #define DEBUGLEX
-    #ifdef DEBUGLEX
-    #define RETURN_TOKEN(x) return(print_token(x), x)
-    #else
+    #include "include/token.hh"
+    #include "lexerUtils.h"
+    /*****定义 return token 的各种宏定义****/
     #define RETURN_TOKEN(x) return(x)
-    #endif
+    /* RETURN_VAL 通用的返回 VAL 的 return 方法,先获取坐标值,再返回 token 字符串*/
+    #define RETURN_VAL(x)  {GetCoord(&yylval.tok);RETURN_TOKEN(x);}
+    #define PA_KEYWORD_RETURN(x) RETURN_VAL(x)
+    #define PPPA_KEYWORD_RETURN(x) RETURN_VAL(x) /* PreProcessor and C keyword 目测没用*/
+    /*PP_KEYWORD_RETURN 较常用 */
+    #define PP_KEYWORD_RETURN(x) \
+    { GetCoord(&yylval.tok);\
+      yylval.n = MakeIdCoord(UniqueString(yytext), yylval.tok);\
+      if (IsAType(yylval.n->u.id.text)) \
+        RETURN_TOKEN(TYPEDEFname); \
+      else RETURN_TOKEN(IDENTIFIER); }
 %}
 
 /*状态定义也叫环境定义，它定义了匹配正规式时所处的状态的名字。状态定义以%s开始，后跟所定义的状态的名字，注意%s也要顶行首写https://blog.csdn.net/wp1603710463/article/details/50365495*/
@@ -47,11 +55,24 @@ s_char ([^"\\\n]|{escape_sequence})
 any_white ([ \011\013\014\015])
 
 %%
-<INITIAL,C>{any_white}+          {  debug("any_white");  }
-<INITIAL,C>.*                    {   char tmp[20];
-                                    CharToText(tmp, *yytext); //这一行暂且不用了
-                                    SyntaxError("Unexpected character: %s \n", yytext); }
+<INITIAL,C>{decimal_constant}    {  yylval.n = int_constant(yytext, TRUE, FALSE);
+                                    debug(yylval.n);
+                                    RETURN_TOKEN(INTEGERconstant);}
+<INITIAL,C>{octal_constant}      {  yylval.n = int_constant(yytext, FALSE, TRUE);
+                                    RETURN_TOKEN(OCTALconstant);}
+<INITIAL,C>{hex_constant}        {  yylval.n = int_constant(yytext, FALSE, FALSE);
+                                    RETURN_TOKEN(HEXconstant);}
 
+<INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);
+                                        yylval.n = float_constant(yytext);
+                                        RETURN_TOKEN(FLOATINGconstant);}
+
+
+
+<INITIAL,C>{any_white}+          {  debug("any_white");  }
+<INITIAL,C>.*                    {  char tmp[20];
+                                    CharToText(tmp, *yytext); //这一行暂且不用了
+                                    SyntaxError("Unexpected character: %s \n", yytext); }    
 %%
 
 /*****第1步,获取文件名****/
@@ -81,9 +102,6 @@ GLOBAL void SetFile(const char *name, int line){
 }
 */
 
-int main(){
-    yylex();
-}
 //<<flex 与 bison>>第144页:  当词法分析器到达文件的末尾时,它可以选择性地调用yywrap()来了解下一步操作.可以让 yywrap 返回1或者%option noyywrap 来终止词法分析操作.
 int yywrap()
 {
