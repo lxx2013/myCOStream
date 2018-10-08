@@ -3,7 +3,8 @@
 
 #define GLOBAL
 #define PRIVATE static
-
+#define TRUE 1
+#define FALSE 0
 /*pretty-debug*/
 
 // debug info is in blue
@@ -41,5 +42,8 @@ void CharToText(char *array, unsigned char value);
 
 /* warning.c */
 GLOBAL void SyntaxError(const char *fmt, ...);
+
+/* parsing phase */
+GLOBAL int yyparse(void), yylex(void);
 
 #endif  /* ifndef _BASICS_H_ */

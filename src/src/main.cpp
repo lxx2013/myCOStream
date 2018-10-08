@@ -1,8 +1,8 @@
 #include<iostream>
-extern int yyparse();
+#include "ast.h"
 
 int main(){
     yyparse();
-    std::cout<<'Hello main.cpp'<<std::endl;
+    std::cout<<"Hello main.cpp"<<std::endl;
     return 0;
 }

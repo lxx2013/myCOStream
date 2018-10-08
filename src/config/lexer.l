@@ -4,7 +4,7 @@
     //#include <ctype.h>
     #define DEBUG
     #include "ast.h"
-    #include "include/token.hh"
+    #include "token.hh"
     #include "lexerUtils.h"
     /*****定义 return token 的各种宏定义****/
     #define RETURN_TOKEN(x) return(x)
@@ -56,7 +56,7 @@ any_white ([ \011\013\014\015])
 
 %%
 <INITIAL,C>{decimal_constant}    {  yylval.n = int_constant(yytext, TRUE, FALSE);
-                                    debug(yylval.n);
+                                    debug("decimal_constant: %d",yylval.n);
                                     RETURN_TOKEN(INTEGERconstant);}
 <INITIAL,C>{octal_constant}      {  yylval.n = int_constant(yytext, FALSE, TRUE);
                                     RETURN_TOKEN(OCTALconstant);}
@@ -77,7 +77,7 @@ any_white ([ \011\013\014\015])
 
 /*****第1步,获取文件名****/
 GLOBAL char *Filename;
-GLOBAL char *FileNames[MAX_FILES] = {"unknown"};
+GLOBAL char *FileNames[MAX_FILES] = {(char*)"unknown"};
 GLOBAL void SetFile(const char *name, int line){
   return ;
 } 

@@ -20,7 +20,8 @@
           WarningCoord(4, node->coord, "suggest parentheses around arithmetic in operand of %c", op);
       }
     }*/
-
+    
+   
     /* bison 进行语法分析时遇到错误默认调用的错误报告函数 */
     void yyerror(const char *msg){
         SyntaxError(msg);

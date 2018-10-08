@@ -14,6 +14,7 @@ src/parser.c
 *.bak
 src/bin
 src/include/token.hh
-src/src/parser.c
+src/src/parser.cc
+src/src/lexer.cc
 src/src/lex
 src/a
