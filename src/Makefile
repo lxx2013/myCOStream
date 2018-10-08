@@ -53,4 +53,5 @@ endif
 clean :
 	@$(RM) src/lexer.cc include/token.hh src/parser.cc y.tab.[ch] y.output *.o  bin/* *.d *.out
 count : 
-	find . -maxdepth 1  -name "*[.l|.c|.h|Makefile]"  | xargs cat | wc -l
+	make clean
+	find . -maxdepth 2  -name "*[.l|.y|.c|.cc|.cpp|.h|Makefile]"  | xargs cat | wc -l
