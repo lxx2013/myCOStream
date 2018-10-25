@@ -38,10 +38,20 @@
         TypeQual   tq;
         Coord      coord;   
     } tq;*/
-    //Coord tok; //token coordinates
+    Coord tok; //token coordinates
 }
 
+// 常量
 %token <n> FLOATINGconstant INTEGERconstant OCTALconstant HEXconstant WIDECHARconstant CHARACTERconstant
+// 保留字符串 /* ANSI keywords, extensions below */
+%token <tok> AUTO            DOUBLE          INT             STRUCT
+%token <tok> BREAK           ELSE            LONG            SWITCH
+%token <tok> CASE            ENUM            REGISTER        TYPEDEF
+%token <tok> CHAR            EXTERN          RETURN          UNION
+%token <tok> CONST           FLOAT           SHORT           UNSIGNED
+%token <tok> CONTINUE        FOR             SIGNED          VOID
+%token <tok> DEFAULT         GOTO            SIZEOF          VOLATILE
+%token <tok> DO              IF              STATIC          WHILE
 
 /*优先级标记*/
 %left '='
@@ -52,6 +62,9 @@
 
 %% 
 /****************************** 常量的文法符号声明 **********************************/
+test: test constant 
+    | constant
+    | test IF
 constant: FLOATINGconstant      { $$ = $1; }
         | INTEGERconstant       { $$ = $1; }
         | OCTALconstant         { $$ = $1; }

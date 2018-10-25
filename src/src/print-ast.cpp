@@ -1,5 +1,4 @@
-#pragma ident "print-ast.c,v 1.17 1995/05/11 18:54:25 rcm Exp Copyright 1994 Massachusetts Institute of Technology"
-
+/*这个文件用于编写 输出抽象语法树 所用的函数*/
 #include <ctype.h>
 #include "ast.h"
 #include <stdio.h>

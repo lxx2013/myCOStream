@@ -56,51 +56,43 @@ any_white ([ \011\013\014\015])
 
 %%
 <INITIAL,C>{decimal_constant}    {  yylval.n = int_constant(yytext, TRUE, FALSE);
-                                    debug("decimal_constant: %d",yylval.n);
+                                    debug("[lexer.l] decimal_constant: %d",yylval.n);
                                     RETURN_TOKEN(INTEGERconstant);}
 <INITIAL,C>{octal_constant}      {  yylval.n = int_constant(yytext, FALSE, TRUE);
+                                    debug("[lexer.l] octal_constant: %d",yylval.n);
                                     RETURN_TOKEN(OCTALconstant);}
 <INITIAL,C>{hex_constant}        {  yylval.n = int_constant(yytext, FALSE, FALSE);
+                                    debug("[lexer.l] hex_constant: %d",yylval.n);
                                     RETURN_TOKEN(HEXconstant);}
 
 <INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);
                                         yylval.n = float_constant(yytext);
+                                        debug("[lexer.l] floating_constant: %d",yylval.n);
                                         RETURN_TOKEN(FLOATINGconstant);}
+<INITIAL,C>{any_white}+          {  debug("[lexer.l] any_white");  }
 
 
-
-<INITIAL,C>{any_white}+          {  debug("any_white");  }
+<INITIAL,C>int                  { PA_KEYWORD_RETURN(INT);}
+<INITIAL,C>{identifier}         { GetCoord(&yylval.tok);  
+                                  /* yylval.n = MakeIdCoord(UniqueString(yytext),yylval.tok);
+                         	        if (IsAType(yylval.n->u.id.text))
+								                    RETURN_TOKEN(TYPEDEFname);
+							                    else RETURN_TOKEN(IDENTIFIER); */}
 <INITIAL,C>.*                    {  char tmp[20];
                                     CharToText(tmp, *yytext); //这一行暂且不用了
                                     SyntaxError("Unexpected character: %s \n", yytext); }    
+
 %%
 
 /*****第1步,获取文件名****/
 GLOBAL char *Filename;
 GLOBAL char *FileNames[MAX_FILES] = {(char*)"unknown"};
+GLOBAL Bool CurrentIncludedp = FALSE;
+GLOBAL unsigned int CurrentFile = 0;
 GLOBAL void SetFile(const char *name, int line){
   return ;
 } 
 
-/*获取 coordinates(坐标) , 即该匹配的单词的行好 line 和偏移 offset*/
-/*PRIVATE inline void GetCoord(Coord *pcoord)
-{
-  char *s;
-  int offset;
-
-  pcoord->file = CurrentFile;
-  pcoord->line = Line;
-  pcoord->includedp = CurrentIncludedp;
-
-  offset = 0;
-  for (s = line_start; s < yytext; ++s) {
-    if (*s == '\t')
-      offset = ((offset / TAB_WIDTH) + 1) * TAB_WIDTH;
-    else ++offset;
-  }
-  pcoord->offset = offset;
-}
-*/
 
 //<<flex 与 bison>>第144页:  当词法分析器到达文件的末尾时,它可以选择性地调用yywrap()来了解下一步操作.可以让 yywrap 返回1或者%option noyywrap 来终止词法分析操作.
 int yywrap()
