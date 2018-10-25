@@ -22,13 +22,13 @@ OBJS := $(POBJ) $(foreach x,$(SRCEXTS),$(patsubst %$(x),%.o,$(notdir $(filter %$
 all : $(PROGRAM)
 
 parser.o: parser.y
+	@mkdir -p bin
 	$(YACC) -v --defines=include/token.hh config/parser.y 
 	mv y.tab.c $(SRCDIRS)/parser.cc
 	$(CXX) $(CPPFLAGS) $(CFLAGS) -DYYDEBUG -c $(SRCDIRS)/parser.cc -o $(OUTDIRS)/parser.o
 lexer.o:  lexer.l
 	@echo SOURCES$(TAB)= ${SOURCES}
 	@echo OBJS$(TAB)= ${OBJS}
-	@mkdir -p bin
 	$(LEX) config/lexer.l 
 	mv lex.yy.c src/lexer.cc
 	$(CXX) $(CPPFLAGS) $(CFLAGS) -c src/lexer.cc -o bin/lexer.o
