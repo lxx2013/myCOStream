@@ -53,6 +53,8 @@
 %token <tok> DEFAULT         GOTO            SIZEOF          VOLATILE
 %token <tok> DO              IF              STATIC          WHILE
 
+%type <n>  basic.type.name
+
 /*优先级标记*/
 %left '='
 %type <n> constant
@@ -65,12 +67,15 @@
 test: test constant 
     | constant
     | test IF
+    | test basic.type.name
 constant: FLOATINGconstant      { $$ = $1; }
         | INTEGERconstant       { $$ = $1; }
         | OCTALconstant         { $$ = $1; }
         | HEXconstant           { $$ = $1; }
         | CHARACTERconstant     { $$ = $1; }
         ;
+basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   }
+
 %%
 /* ----语法树结束----*/
 

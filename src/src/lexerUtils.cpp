@@ -9,6 +9,8 @@ double float_constant(const char *s){
 /*获取 coordinates(坐标) , 即该匹配的单词的行好 line 和偏移 offset*/
 void GetCoord(Coord *pcoord,char* yytext)
 {
+  debug("%s",yytext);
+  return ;
   char *s;
   int offset;
 

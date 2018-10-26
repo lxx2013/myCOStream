@@ -3,6 +3,6 @@
 
 int main(){
     yyparse();
-    std::cout<<"Hello main.cpp"<<std::endl;
+    std::cout<<std::endl<<"[main.cpp] yyparse() end"<<std::endl;
     return 0;
 }

@@ -65,15 +65,16 @@ any_white ([ \011\013\014\015])
                                     debug("[lexer.l] hex_constant: %d",yylval.n);
                                     RETURN_TOKEN(HEXconstant);}
 
-<INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);
+<INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);  /* 这一句写了等于没写,yytext 没变化*/
                                         yylval.n = float_constant(yytext);
-                                        debug("[lexer.l] floating_constant: %d",yylval.n);
+                                        debug("[lexer.l] floating_constant: %s",yytext);
                                         RETURN_TOKEN(FLOATINGconstant);}
 <INITIAL,C>{any_white}+          {  debug("[lexer.l] any_white");  }
 
 
 <INITIAL,C>int                  { PA_KEYWORD_RETURN(INT);}
-<INITIAL,C>{identifier}         { //GetCoord(&yylval.tok,yytext);  
+<INITIAL,C>{identifier}         { debug("identifier\n");
+                                  //GetCoord(&yylval.tok,yytext);  
                                   /* yylval.n = MakeIdCoord(UniqueString(yytext),yylval.tok);
                          	        if (IsAType(yylval.n->u.id.text))
 								                    RETURN_TOKEN(TYPEDEFname);
