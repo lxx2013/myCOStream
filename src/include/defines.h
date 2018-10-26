@@ -7,6 +7,7 @@
 typedef int Bool;
 #define TRUE 1
 #define FALSE 0
+#define TAB_WIDTH  8
 
 /*pretty-debug*/
 // debug info is in blue

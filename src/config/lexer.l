@@ -9,12 +9,12 @@
     /*****定义 return token 的各种宏定义****/
     #define RETURN_TOKEN(x) return(x)
     /* RETURN_VAL 通用的返回 VAL 的 return 方法,先获取坐标值,再返回 token 字符串*/
-    #define RETURN_VAL(x)  {GetCoord(&yylval.tok);RETURN_TOKEN(x);}
+    #define RETURN_VAL(x)  {GetCoord(&yylval.tok,yytext);RETURN_TOKEN(x);}
     #define PA_KEYWORD_RETURN(x) RETURN_VAL(x)
     #define PPPA_KEYWORD_RETURN(x) RETURN_VAL(x) /* PreProcessor and C keyword 目测没用*/
     /*PP_KEYWORD_RETURN 较常用 */
     #define PP_KEYWORD_RETURN(x) \
-    { GetCoord(&yylval.tok);\
+    { GetCoord(&yylval.tok,yytext);\
       yylval.n = MakeIdCoord(UniqueString(yytext), yylval.tok);\
       if (IsAType(yylval.n->u.id.text)) \
         RETURN_TOKEN(TYPEDEFname); \
@@ -73,7 +73,7 @@ any_white ([ \011\013\014\015])
 
 
 <INITIAL,C>int                  { PA_KEYWORD_RETURN(INT);}
-<INITIAL,C>{identifier}         { GetCoord(&yylval.tok);  
+<INITIAL,C>{identifier}         { //GetCoord(&yylval.tok,yytext);  
                                   /* yylval.n = MakeIdCoord(UniqueString(yytext),yylval.tok);
                          	        if (IsAType(yylval.n->u.id.text))
 								                    RETURN_TOKEN(TYPEDEFname);
