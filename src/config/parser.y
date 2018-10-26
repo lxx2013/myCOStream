@@ -41,6 +41,7 @@
     Coord tok; //token coordinates
 }
 
+%token <n> IDENTIFIER
 // 常量
 %token <n> FLOATINGconstant INTEGERconstant OCTALconstant HEXconstant WIDECHARconstant CHARACTERconstant
 // 保留字符串 /* ANSI keywords, extensions below */

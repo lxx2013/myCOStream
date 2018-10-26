@@ -1,4 +1,7 @@
 #include "lexerUtils.h"
+#define DEBUG
+#include "basics.h"
+
 int int_constant(const char *s, Bool decimal, Bool octal){
     return atoi(s);
 }
@@ -9,10 +12,10 @@ double float_constant(const char *s){
 /*获取 coordinates(坐标) , 即该匹配的单词的行好 line 和偏移 offset*/
 void GetCoord(Coord *pcoord,char* yytext)
 {
-  debug("%s",yytext);
-  return ;
+  debug("[lexerUtils.cpp GetCoord] yytext:%s\n",yytext);
   char *s;
   int offset;
+  debug("[lexerUtils.cpp GetCoord] {line_start:%s}",line_start);
 
   pcoord->file = CurrentFile;
   pcoord->line = Line;
@@ -25,4 +28,5 @@ void GetCoord(Coord *pcoord,char* yytext)
     else ++offset;
   }
   pcoord->offset = offset;
+  debug("\n[lexerUtils.cpp GetCoord] pcoord:{line:%d,file:%d,offset:%d,includedp:%d}",pcoord->line,pcoord->file,pcoord->offset,pcoord->includedp);
 }

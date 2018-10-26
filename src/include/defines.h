@@ -11,6 +11,7 @@ typedef int Bool;
 
 /*pretty-debug*/
 // debug info is in blue
+#define DEBUG
 #ifdef DEBUG
 #define debug(format, args...) fprintf(stdout, "\033[36m" format "\033[0m", ##args)
 #else

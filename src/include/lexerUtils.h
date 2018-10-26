@@ -9,11 +9,6 @@ typedef int Bool;
 int int_constant(const char *s, Bool decimal, Bool octal);
 double float_constant(const char *s);
 void GetCoord(Coord *pcoord,char* yytext);
+extern char* line_start;
 
-static char *line_start;
-
-#undef YY_INPUT
-#define YY_INPUT(buf, result, max_size) \
-    if (fgets(buf, max_size, yyin)==0) { result=0; } \
-    else { line_start = (char *)buf; result = strlen(buf); }
 #endif

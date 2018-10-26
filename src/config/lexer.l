@@ -6,6 +6,14 @@
     #include "ast.h"
     #include "token.hh"
     #include "lexerUtils.h"
+
+    char *line_start;
+
+    #undef YY_INPUT
+    #define YY_INPUT(buf, result, max_size) \
+        if (fgets(buf, max_size, yyin)==0) { result=0; } \
+        else { line_start = (char *)buf; result = strlen(buf); }
+        
     /*****定义 return token 的各种宏定义****/
     #define RETURN_TOKEN(x) return(x)
     /* RETURN_VAL 通用的返回 VAL 的 return 方法,先获取坐标值,再返回 token 字符串*/
@@ -74,11 +82,11 @@ any_white ([ \011\013\014\015])
 
 <INITIAL,C>int                  { PA_KEYWORD_RETURN(INT);}
 <INITIAL,C>{identifier}         { debug("identifier\n");
-                                  //GetCoord(&yylval.tok,yytext);  
-                                  /* yylval.n = MakeIdCoord(UniqueString(yytext),yylval.tok);
-                         	        if (IsAType(yylval.n->u.id.text))
+                                  GetCoord(&yylval.tok,yytext);  
+                                  yylval.n = MakeIdCoord(UniqueString(yytext),yylval.tok);
+                         	        /*if (IsAType(yylval.n->u.id.text))
 								                    RETURN_TOKEN(TYPEDEFname);
-							                    else RETURN_TOKEN(IDENTIFIER); */}
+							                    else */ RETURN_TOKEN(IDENTIFIER); }
 <INITIAL,C>.*                    {  char tmp[20];
                                     CharToText(tmp, *yytext); //这一行暂且不用了
                                     SyntaxError("Unexpected character: %s \n", yytext); }    
