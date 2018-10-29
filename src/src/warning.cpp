@@ -17,8 +17,8 @@ GLOBAL void Fail(const char *file, int line, const char *msg)
     error("Assertion failed in %s, line %d\n", file, line);
     error("Assert arg:\t%s\n", msg);
 
-    char * PhaseName = "语法分析"; //其实这个变量应该是来自于 main.cpp
-    if (strcmp(PhaseName, "Parsing") == 0)
+    string PhaseName = "语法分析"; //其实这个变量应该是来自于 main.cpp
+    if (PhaseName=="Parsing")
     {
         fprintf(stderr, "Input: %s, line %d\n", Filename, Line);
     }

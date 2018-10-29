@@ -2,9 +2,15 @@
 #define DEBUG
 #include "basics.h"
 
-int int_constant(const char *s, Bool decimal, Bool octal){
-    return atoi(s);
+Node *int_constant(const char *s, Coord coord, Bool decimal, Bool octal)
+{
+  Node *c;
+  TARGET_ULONG value;
+  value = (TARGET_ULONG)strtoul(s, NULL, 0);
+  c = MakeConstSintTextCoord(s,(TARGET_INT)value, coord);
+  return (c);
 }
+
 double float_constant(const char *s){
     return atof(s);
 }

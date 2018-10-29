@@ -24,8 +24,8 @@ typedef struct {
 	Node *value;
 } idNode;
 typedef struct {
-	const char* text;  /* text will be NULL if constant was not derived from source, but computed by type-checker. */
-	ChildNode *type;  /* type is required to be one of: Sint, Uint, Slong, Ulong, Float, Double, or Adcl(Char) */
+	const char *text;  /* text will be NULL if constant was not derived from source, but computed by type-checker. */
+	const char *type;  /* type is required to be one of: Sint, Uint, Slong, Ulong, Float, Double, or Adcl(Char) */
 	union {
 	  int    i;
 	  long   l;
@@ -55,6 +55,7 @@ struct nodeStruct {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
                             AST constructors
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+GLOBAL Node *MakeConstSintTextCoord(const char *text, int value, Coord coord);
 GLOBAL Node *MakeIdCoord(const char* text, Coord coord);
 GLOBAL Node *MakeConstSint(int value);
 GLOBAL Node *MakeConstFloat(float value);

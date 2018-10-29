@@ -63,14 +63,12 @@ s_char ([^"\\\n]|{escape_sequence})
 any_white ([ \011\013\014\015])
 
 %%
-<INITIAL,C>{decimal_constant}    {  yylval.num = int_constant(yytext, TRUE, FALSE);
-                                    debug("[lexer.l] decimal_constant: %d",yylval.num);
+<INITIAL,C>{decimal_constant}    {  GetCoord(&yylval.tok,yytext);  
+                                    yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(INTEGERconstant);}
-<INITIAL,C>{octal_constant}      {  yylval.num = int_constant(yytext, FALSE, TRUE);
-                                    debug("[lexer.l] octal_constant: %d",yylval.num);
+<INITIAL,C>{octal_constant}      {  yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(OCTALconstant);}
-<INITIAL,C>{hex_constant}        {  yylval.num = int_constant(yytext, FALSE, FALSE);
-                                    debug("[lexer.l] hex_constant: %d",yylval.num);
+<INITIAL,C>{hex_constant}        {  yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(HEXconstant);}
 
 <INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);  /* 这一句写了等于没写,yytext 没变化*/

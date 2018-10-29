@@ -61,19 +61,13 @@ PRIVATE void PrintConst(FILE *out, Node *node, ConstNode *u, int offset, Bool no
 GLOBAL int PrintConstant(FILE *out, Node *c, Bool with_name)
 {
   int len = 0;
-  if (with_name)
-    switch (c->u.Const.type->typ)
-    {
-      default:
-        len = error("[%s:%d]UnkownConstantType ",__FILE__,__LINE__); break;
-    }
-
-  switch (c->u.Const.type->typ)
+  std::string type = std::string(c->u.Const.type); 
+  if(type == "Sint")
   {
-    case Const:
-      debug("\n I am Const!\n");break;
-    default:
-      error("[%s:%d]Unrecognized constant type ", __FILE__, __LINE__);break;
+    debug("\n I am Sint! My value is:%d\n",c->u.Const.value.i);    
+  }
+  else{
+    error("[%s:%d]Unrecognized constant type ", __FILE__, __LINE__);
   }
   return 0;
 }

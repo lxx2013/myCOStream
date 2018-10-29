@@ -1,6 +1,7 @@
 %{
     #define DEBUG
     #include "ast.h"
+    #include "print-ast.h"
     /* 原 ANSI-C.y 中不明所以的 define,对应书中写到,yydebug控制是否产生调试报告(0值不产生),YYERROR_VERBOSE 没找到描述*/
     #ifndef YYDEBUG
     int yydebug=0;
@@ -71,7 +72,7 @@ test: test constant
     | test basic.type.name
     | test IDENTIFIER  {{ }}
 constant: FLOATINGconstant      { $$ = $1; }
-        | INTEGERconstant       { $$ = $1; }
+        | INTEGERconstant       { PrintNode(stdout,$1,3); }
         | OCTALconstant         { $$ = $1; }
         | HEXconstant           { $$ = $1; }
         | CHARACTERconstant     { $$ = $1; }

@@ -4,9 +4,10 @@
 #include<stdlib.h>
 #include "Coord.h"
 #include "global_variable.h"
+#include "ast.h"
 
 typedef int Bool;
-int int_constant(const char *s, Bool decimal, Bool octal);
+Node *int_constant(const char *s, Coord coord, Bool decimal, Bool octal);
 double float_constant(const char *s);
 void GetCoord(Coord *pcoord,char* yytext);
 extern char* line_start;

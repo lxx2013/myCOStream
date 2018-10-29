@@ -16,6 +16,26 @@ GLOBAL Node *NewNode(NodeType typ)
 	//create->analysis.livevars = NULL;
 	return(create);
 }
+
+/*************************************************************************/
+/*                          Expression nodes                             */
+/*************************************************************************/
+GLOBAL Node *MakeConstSint(int value)
+{
+	Node *node = NewNode(Const);
+	node->u.Const.type = "Sint";
+	node->u.Const.value.i = value;
+	node->u.Const.text = NULL;
+	return node;
+}
+GLOBAL Node *MakeConstSintTextCoord(const char * text,int value, Coord coord)
+{
+	Node *create = MakeConstSint(value);
+	create->u.Const.text = text;
+	create->coord = coord;
+	return (create);
+}
+
 GLOBAL Node *MakeId(const char* text)
 {
 	Node *create = NewNode(Id);
