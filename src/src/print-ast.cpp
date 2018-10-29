@@ -1,6 +1,6 @@
 /*这个文件用于编写 输出抽象语法树 所用的函数*/
 #include <ctype.h>
-#include "ast.h"
+#include "print-ast.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -20,4 +20,63 @@ GLOBAL void CharToText(char *array, unsigned char value)
   } else { /* value >= 0x80 */
     sprintf(array, "0x%x", value);
   }
+}
+
+GLOBAL short PassCounter = 0;
+GLOBAL int PrintInvocations = 0; /* number of pending PrintNodes on call stack */
+GLOBAL void PrintNode(FILE *out, Node *node, int offset)
+{
+  Bool norecurse;
+  if (node == NULL)
+  {
+    fprintf(out, "\n[print-ast.cpp] PrintNode: null");
+    return;
+  }
+  if (PrintInvocations++ == 0)
+  {
+    /* then we're the first invocation for this pass over the tree */
+    ++PassCounter;
+  }
+  norecurse = (node->pass == PassCounter);
+  node->pass = PassCounter;
+
+#define CODE(name, node, union) Print##name(out, node, union, offset, norecurse)
+  ASTSWITCH(node, CODE);
+#undef CODE
+  --PrintInvocations;
+}
+
+/*************************************************************************/
+/*                          Expression nodes                             */
+/*************************************************************************/
+PRIVATE void PrintConst(FILE *out, Node *node, ConstNode *u, int offset, Bool norecurse)
+{
+  fprintf(out, "\nConst: ");
+  PrintConstant(out, node, TRUE);
+}
+
+/*************************************************************************/
+/*                      Low-level output routines                        */
+/*************************************************************************/
+GLOBAL int PrintConstant(FILE *out, Node *c, Bool with_name)
+{
+  int len = 0;
+  if (with_name)
+    switch (c->u.Const.type->typ)
+    {
+      default:
+        len = error("[%s:%d]UnkownConstantType ",__FILE__,__LINE__); break;
+    }
+
+  switch (c->u.Const.type->typ)
+  {
+    case Const:
+      debug("\n I am Const!\n");break;
+    default:
+      error("[%s:%d]Unrecognized constant type ", __FILE__, __LINE__);break;
+  }
+  return 0;
+}
+PRIVATE void PrintId(FILE *out, Node *node, idNode *u, int offset, Bool norecurse){
+  debug("I am PrintId");
 }

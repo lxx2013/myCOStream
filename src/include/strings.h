@@ -9,6 +9,6 @@
 */
 PRIVATE char *copy_string(const char *string);
 PRIVATE short hash_function(const char *string);
-GLOBAL char *UniqueString(const char *string);   /* strings.c */
+GLOBAL char *UniqueString(const char *string);   /* strings.cpp */
 
 #endif

@@ -41,7 +41,7 @@ GLOBAL char *UniqueString(const char *string)
 
     for (entry = hash_table[bucket]; entry != NULL; entry = entry->next)
       if (strcmp(string, entry->string) == 0)
-	return(entry->string);
+	    return(entry->string);
 
     /* not found */
     entry = HeapNew(entryType);

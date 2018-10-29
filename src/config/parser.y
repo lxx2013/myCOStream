@@ -30,8 +30,8 @@
 
 /*在 union 里声明 %token 可能有的类型*/
 %union{
-    //Node *n;
-    int n; //tag:v1.0.0 临时测试用的数据类型,目的是让这一次 make 能跑通
+    Node *n;
+    int num; //tag:v1.0.0 临时测试用的数据类型,目的是让这一次 make 能跑通
     //List *L;
     /*
     struct {
@@ -69,13 +69,35 @@ test: test constant
     | constant
     | test IF
     | test basic.type.name
+    | test IDENTIFIER  {{ }}
 constant: FLOATINGconstant      { $$ = $1; }
         | INTEGERconstant       { $$ = $1; }
         | OCTALconstant         { $$ = $1; }
         | HEXconstant           { $$ = $1; }
         | CHARACTERconstant     { $$ = $1; }
         ;
-basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   }
+basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   };
+
+/********************************************************************************
+*                                EXPRESSIONS                                    *
+********************************************************************************/
+
+// primary.expression:   IDENTIFIER           { $$ = $1; }
+//                     | constant
+                    // | string.literal.list
+                    // | '(' expression ')'    { if ($2->typ == Comma) $2->coord = $1;
+                    //                         $2->parenthesized = TRUE;
+                    //                         $$ = $2; }
+                    // /* GCC-inspired non ANSI-C extension */
+                    // | '(' lblock statement.list rblock ')'
+                    //     { if (ANSIOnly)
+                    //     SyntaxError("statement expressions not allowed with -ansi switch");
+                    //     $$ = MakeBlockCoord(NULL, NULL, GrabPragmas($3), $1, $4); }
+                    // | '(' lblock declaration.list statement.list rblock ')'
+                    //     { if (ANSIOnly)
+                    //     SyntaxError("statement expressions not allowed with -ansi switch");
+                    //     $$ = MakeBlockCoord(NULL, $3, GrabPragmas($4), $1, $5); }
+                    ;
 
 %%
 /* ----语法树结束----*/

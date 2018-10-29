@@ -12,6 +12,18 @@
 
 GLOBAL int Line = 1, Errors = 0, Warnings = 0;
 
+GLOBAL void Fail(const char *file, int line, const char *msg)
+{
+    error("Assertion failed in %s, line %d\n", file, line);
+    error("Assert arg:\t%s\n", msg);
+
+    char * PhaseName = "语法分析"; //其实这个变量应该是来自于 main.cpp
+    if (strcmp(PhaseName, "Parsing") == 0)
+    {
+        fprintf(stderr, "Input: %s, line %d\n", Filename, Line);
+    }
+    abort(); //类似于 exit(),但调用时，不进行任何清理工作。直接终止程序。
+}
 
 GLOBAL void SyntaxError(const char *fmt, ...)
 {

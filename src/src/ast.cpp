@@ -1,17 +1,12 @@
 #include "ast.h"
+GLOBAL Coord UnknownCoord = {
+	/* line:   */ 0,
+	/* offset: */ 0,
+	/* file:   */ 0,
+	/* includedp: */ FALSE
+};
 
-/* used by HeapNew() (defined in ast.h) to allocate whole objects */
-GLOBAL inline void *HeapAllocate(int number, int size)
-{ 
-	return calloc(number, size);
-}
-
-GLOBAL inline void HeapFree(void *ptr)
-{
-	free(ptr);
-}
-
-GLOBAL inline Node *NewNode(NodeType typ)
+GLOBAL Node *NewNode(NodeType typ)
 {
 	Node *create = HeapNew(Node);
 
@@ -21,7 +16,7 @@ GLOBAL inline Node *NewNode(NodeType typ)
 	//create->analysis.livevars = NULL;
 	return(create);
 }
-GLOBAL inline Node *MakeId(const char* text)
+GLOBAL Node *MakeId(const char* text)
 {
 	Node *create = NewNode(Id);
 
@@ -29,7 +24,7 @@ GLOBAL inline Node *MakeId(const char* text)
 	create->u.id.decl = NULL;
 	return(create);
 }
-GLOBAL inline Node *MakeIdCoord(const char* text, Coord coord)
+GLOBAL Node *MakeIdCoord(const char* text, Coord coord)
 {
 	Node *create = MakeId(text);
 	create->coord = coord;

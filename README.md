@@ -6,7 +6,7 @@
     - `include` 
     - `src`
     - `Makefile`
-    - `a` 临时使用的作为`a.out`存在的可执行程序
+    - `a` 临时使用的作为`a.out`存在的可执行程序
 - `tests` 测试用例
 - `doc` 文档
     - `0.makefile.md` makefile 文件解读

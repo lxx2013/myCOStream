@@ -28,4 +28,9 @@ typedef int Bool;
 // warning info is in orange
 #define warning(format, args...) fprintf(stderr, "\033[33m[WARNING]:" format "\033[30;1m", ##args)
 
+#include <stdio.h>
+#include <stdlib.h>
+#undef assert
+#define assert(x) ((x) ? (void)0 : (void)Fail(__FILE__, __LINE__, #x))
+
 #endif
