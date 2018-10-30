@@ -56,8 +56,8 @@ struct nodeStruct {
                             AST constructors
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 GLOBAL Node *MakeConstSintTextCoord(const char *text, int value, Coord coord);
+GLOBAL Node *MakeConstDoubleTextCoord(const char *text, double value, Coord coord);
+
 GLOBAL Node *MakeIdCoord(const char* text, Coord coord);
-GLOBAL Node *MakeConstSint(int value);
-GLOBAL Node *MakeConstFloat(float value);
 
 #endif /* ifndef _AST_H_ */

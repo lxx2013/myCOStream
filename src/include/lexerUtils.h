@@ -8,7 +8,7 @@
 
 typedef int Bool;
 Node *int_constant(const char *s, Coord coord, Bool decimal, Bool octal);
-double float_constant(const char *s);
+Node *float_constant(const char *s, Coord coord);
 void GetCoord(Coord *pcoord,char* yytext);
 extern char* line_start;
 

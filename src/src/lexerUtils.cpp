@@ -11,8 +11,12 @@ Node *int_constant(const char *s, Coord coord, Bool decimal, Bool octal)
   return (c);
 }
 
-double float_constant(const char *s){
-    return atof(s);
+Node *float_constant(const char *s, Coord coord){
+  Node *c;
+  double value;
+  value = strtod(s,NULL);
+  c = MakeConstDoubleTextCoord(s,value, coord);
+  return (c);
 }
 
 /*获取 coordinates(坐标) , 即该匹配的单词的行好 line 和偏移 offset*/

@@ -71,7 +71,7 @@ test: test constant
     | test IF
     | test basic.type.name
     | test IDENTIFIER  {{ }}
-constant: FLOATINGconstant      { $$ = $1; }
+constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         | INTEGERconstant       { PrintNode(stdout,$1,3); }
         | OCTALconstant         { PrintNode(stdout,$1,3); }
         | HEXconstant           { PrintNode(stdout,$1,3); }

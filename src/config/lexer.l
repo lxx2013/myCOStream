@@ -75,8 +75,7 @@ any_white ([ \011\013\014\015])
 
 <INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);  /* 这一句写了等于没写,yytext 没变化*/
                                         GetCoord(&yylval.tok,yytext);
-                                        yylval.num = float_constant(yytext);
-                                        debug("[lexer.l] floating_constant: %s",yytext);
+                                        yylval.n = float_constant(yytext,yylval.tok);
                                         RETURN_TOKEN(FLOATINGconstant);}
 <INITIAL,C>{any_white}+          {  debug("[lexer.l] any_white");  }
 

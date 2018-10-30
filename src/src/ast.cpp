@@ -9,7 +9,6 @@ GLOBAL Coord UnknownCoord = {
 GLOBAL Node *NewNode(NodeType typ)
 {
 	Node *create = HeapNew(Node);
-
 	create->typ = typ;
 	create->coord = UnknownCoord;
 	create->parenthesized = FALSE;
@@ -20,20 +19,23 @@ GLOBAL Node *NewNode(NodeType typ)
 /*************************************************************************/
 /*                          Expression nodes                             */
 /*************************************************************************/
-GLOBAL Node *MakeConstSint(int value)
+GLOBAL Node *MakeConstSintTextCoord(const char * text,int value, Coord coord)
 {
 	Node *node = NewNode(Const);
 	node->u.Const.type = "Sint";
 	node->u.Const.value.i = value;
-	node->u.Const.text = NULL;
-	return node;
+	node->u.Const.text = text;
+	node->coord = coord;
+	return (node);
 }
-GLOBAL Node *MakeConstSintTextCoord(const char * text,int value, Coord coord)
+GLOBAL Node *MakeConstDoubleTextCoord(const char *text, double value, Coord coord)
 {
-	Node *create = MakeConstSint(value);
-	create->u.Const.text = text;
-	create->coord = coord;
-	return (create);
+	Node *node = NewNode(Const);
+	node->u.Const.type = "Double";
+	node->u.Const.value.d = value;
+	node->u.Const.text = text;
+	node->coord = coord;
+	return (node);
 }
 
 GLOBAL Node *MakeId(const char* text)
