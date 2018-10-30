@@ -64,7 +64,8 @@ GLOBAL int PrintConstant(FILE *out, Node *c, Bool with_name)
   std::string type = std::string(c->u.Const.type); 
   if(type == "Sint")
   {
-    debug("\n I am Sint! My value is:%d\n",c->u.Const.value.i);    
+    debug("\n I am Sint! My value is:%d",c->u.Const.value.i);   
+    PRINT_COORD(stdout,c->coord); 
   }
   else{
     error("[%s:%d]Unrecognized constant type ", __FILE__, __LINE__);

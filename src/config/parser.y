@@ -73,8 +73,8 @@ test: test constant
     | test IDENTIFIER  {{ }}
 constant: FLOATINGconstant      { $$ = $1; }
         | INTEGERconstant       { PrintNode(stdout,$1,3); }
-        | OCTALconstant         { $$ = $1; }
-        | HEXconstant           { $$ = $1; }
+        | OCTALconstant         { PrintNode(stdout,$1,3); }
+        | HEXconstant           { PrintNode(stdout,$1,3); }
         | CHARACTERconstant     { $$ = $1; }
         ;
 basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   };

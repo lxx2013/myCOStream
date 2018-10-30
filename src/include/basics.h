@@ -22,6 +22,9 @@ using namespace std;
 #include "config.h"
 /***************************************************************************************/
 
+/* Global Flags */
+GLOBAL extern Bool PrintLineOffset; /* main.c */
+
 /* pretty-printing */
 void CharToText(char *array, unsigned char value);
 

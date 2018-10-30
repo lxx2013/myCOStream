@@ -15,9 +15,9 @@ GLOBAL extern Coord UnknownCoord;
 #define IsUnknownCoord(coord)  ((coord).file == UnknownCoord.file)
 #define PRINT_COORD(out, c) \
 { if (PrintLineOffset) \
-	fprintf(out,"%s:%d:%d", FileNames[(c).file], (int)(c).line, \
+	fprintf(out," Coord:{file:%s,line:%d,offset:%d}", FileNames[(c).file], (int)(c).line, \
 	(int)(c).offset); \
-	else fprintf(out, "%s:%d", FileNames[(c).file], (int) (c).line); }
+	else fprintf(out, " Coord:{file:%s,line:%d}", FileNames[(c).file], (int) (c).line); }
 
 
 #endif

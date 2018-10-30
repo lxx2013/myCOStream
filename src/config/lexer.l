@@ -66,12 +66,15 @@ any_white ([ \011\013\014\015])
 <INITIAL,C>{decimal_constant}    {  GetCoord(&yylval.tok,yytext);  
                                     yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(INTEGERconstant);}
-<INITIAL,C>{octal_constant}      {  yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
+<INITIAL,C>{octal_constant}      {  GetCoord(&yylval.tok,yytext);
+                                    yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(OCTALconstant);}
-<INITIAL,C>{hex_constant}        {  yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
+<INITIAL,C>{hex_constant}        {  GetCoord(&yylval.tok,yytext);
+                                    yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(HEXconstant);}
 
 <INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);  /* 这一句写了等于没写,yytext 没变化*/
+                                        GetCoord(&yylval.tok,yytext);
                                         yylval.num = float_constant(yytext);
                                         debug("[lexer.l] floating_constant: %s",yytext);
                                         RETURN_TOKEN(FLOATINGconstant);}
@@ -93,7 +96,7 @@ any_white ([ \011\013\014\015])
 
 /*****第1步,获取文件名****/
 GLOBAL char *Filename;
-GLOBAL char *FileNames[MAX_FILES] = {(char*)"unknown"};
+GLOBAL char *FileNames[MAX_FILES] = {(char*)"REPL"}; //默认的命令行动态输入输出就是 REPL
 GLOBAL Bool CurrentIncludedp = FALSE;
 GLOBAL unsigned int CurrentFile = 0;
 GLOBAL void SetFile(const char *name, int line){

@@ -6,7 +6,7 @@ Node *int_constant(const char *s, Coord coord, Bool decimal, Bool octal)
 {
   Node *c;
   TARGET_ULONG value;
-  value = (TARGET_ULONG)strtoul(s, NULL, 0);
+  value = strtol(s,NULL,0);
   c = MakeConstSintTextCoord(s,(TARGET_INT)value, coord);
   return (c);
 }
