@@ -62,7 +62,14 @@ s_char ([^"\\\n]|{escape_sequence})
 /*第一个是空格 \011 tab \013回车 \014 */
 any_white ([ \011\013\014\015])
 
+Annotations      \/\*(\/\/|[^(\*\/)]|\n)*\*\/
+Annotation       \/\/[^\n]*\n
+%option yylineno
 %%
+<INITIAL,C>{Annotation}           {debug("单行注释\n");}
+<INITIAL,C>{Annotations}           {debug("多行注释\n");}
+<INITIAL,C>"\n"             {  Line = yylineno;}
+
 <INITIAL,C>{decimal_constant}    {  GetCoord(&yylval.tok,yytext);  
                                     yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(INTEGERconstant);}
