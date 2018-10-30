@@ -55,6 +55,31 @@
 %token <tok> DEFAULT         GOTO            SIZEOF          VOLATILE
 %token <tok> DO              IF              STATIC          WHILE
 
+/*-----------------Define For SPL----------------*/
+%token  COMPOSITE		 INPUT			 OUTPUT			 STREAM
+%token  PARAM			 ADD
+%token  INIT			 WORK			 WINDOW
+%token  TUMBLING		 SLIDING
+
+%token  SPLITJOIN        SPLIT				JOIN
+%token  DUPLICATE        ROUNDROBIN		PIPELINE
+%token  FILEREADER       FILEWRITER
+
+/* Multi-Character operators */
+%token <tok>  ARROW            /*    ->                              */
+%token <tok>  ICR DECR         /*    ++      --                      */
+%token <tok>  LS RS            /*    <<      >>                      */
+%token <tok>  LE GE EQ NE      /*    <=      >=      ==      !=      */
+%token <tok>  ANDAND OROR      /*    &&      ||                      */
+%token <tok>  ELLIPSIS         /*    ...                             */
+
+/* modifying assignment operators */
+%token <tok> '='
+%token <tok> MULTassign  DIVassign    MODassign   /*   *=      /=      %=      */
+%token <tok> PLUSassign  MINUSassign              /*   +=      -=              */
+%token <tok> LSassign    RSassign                 /*   <<=     >>=             */
+%token <tok> ANDassign   ERassign     ORassign    /*   &=      ^=      |=      */
+
 %type <n>  basic.type.name
 
 /*优先级标记*/
@@ -70,12 +95,12 @@ test: test constant
     | constant
     | test IF
     | test basic.type.name
-    | test IDENTIFIER  {{ }}
+    | test IDENTIFIER  {{PrintNode(stdout,$2,3); }}
+    | test '(' ')' {{ debug("()\n");}}
 constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         | INTEGERconstant       { PrintNode(stdout,$1,3); }
         | OCTALconstant         { PrintNode(stdout,$1,3); }
         | HEXconstant           { PrintNode(stdout,$1,3); }
-        | CHARACTERconstant     { $$ = $1; }
         ;
 basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   };
 

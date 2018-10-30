@@ -24,9 +24,7 @@
     #define PP_KEYWORD_RETURN(x) \
     { GetCoord(&yylval.tok,yytext);\
       yylval.n = MakeIdCoord(UniqueString(yytext), yylval.tok);\
-      if (IsAType(yylval.n->u.id.text)) \
-        RETURN_TOKEN(TYPEDEFname); \
-      else RETURN_TOKEN(IDENTIFIER); }
+      RETURN_TOKEN(IDENTIFIER); }
 %}
 
 /*状态定义也叫环境定义，它定义了匹配正规式时所处的状态的名字。状态定义以%s开始，后跟所定义的状态的名字，注意%s也要顶行首写https://blog.csdn.net/wp1603710463/article/details/50365495*/
@@ -70,6 +68,96 @@ Annotation       \/\/[^\n]*\n
 <INITIAL,C>{Annotations}           {debug("多行注释\n");}
 <INITIAL,C>"\n"             {  Line = yylineno;}
 
+<INITIAL,C>break               {PA_KEYWORD_RETURN(BREAK);}
+<INITIAL,C>case                {PA_KEYWORD_RETURN(CASE);}
+<INITIAL,C>char                {PA_KEYWORD_RETURN(CHAR);}
+<INITIAL,C>const               {PA_KEYWORD_RETURN(CONST);}
+<INITIAL,C>continue            {PA_KEYWORD_RETURN(CONTINUE);}
+<INITIAL,C>default             {PA_KEYWORD_RETURN(DEFAULT);}
+<INITIAL,C>do                  {PA_KEYWORD_RETURN(DO);}
+<INITIAL,C>double              {PA_KEYWORD_RETURN(DOUBLE);}
+<INITIAL,C>int                 {PA_KEYWORD_RETURN(INT);}
+<INITIAL,C>else                {PPPA_KEYWORD_RETURN(ELSE);}
+<INITIAL,C>for                 {PA_KEYWORD_RETURN(FOR);}
+<INITIAL,C>if                  {PPPA_KEYWORD_RETURN(IF);}
+<INITIAL,C>while               {PA_KEYWORD_RETURN(WHILE);}
+
+<INITIAL,C>composite		       {PA_KEYWORD_RETURN(COMPOSITE);}
+<INITIAL,C>input			         {PA_KEYWORD_RETURN(INPUT);}
+<INITIAL,C>output			         {PA_KEYWORD_RETURN(OUTPUT);}
+<INITIAL,C>stream              {PA_KEYWORD_RETURN(STREAM);}
+<INITIAL,C>FileReader		    {PA_KEYWORD_RETURN(FILEREADER);}
+<INITIAL,C>FileWriter		    {PA_KEYWORD_RETURN(FILEWRITER);}
+<INITIAL,C>add				      {PA_KEYWORD_RETURN(ADD);}
+
+<INITIAL,C>param			      {PA_KEYWORD_RETURN(PARAM);}
+
+<INITIAL,C>init			        {PA_KEYWORD_RETURN(INIT);}
+<INITIAL,C>work			        {PA_KEYWORD_RETURN(WORK);}
+<INITIAL,C>window			      {PA_KEYWORD_RETURN(WINDOW);}
+
+<INITIAL,C>tumbling			    {PA_KEYWORD_RETURN(TUMBLING);}
+<INITIAL,C>sliding			    {PA_KEYWORD_RETURN(SLIDING);}
+
+
+<INITIAL,C>splitjoin		    {PA_KEYWORD_RETURN(SPLITJOIN);}
+<INITIAL,C>pipeline			    {PA_KEYWORD_RETURN(PIPELINE);}
+<INITIAL,C>split			      {PA_KEYWORD_RETURN(SPLIT);}
+<INITIAL,C>join				      {PA_KEYWORD_RETURN(JOIN);}
+<INITIAL,C>duplicate		    {PA_KEYWORD_RETURN(DUPLICATE);}
+<INITIAL,C>roundrobin		    {PA_KEYWORD_RETURN(ROUNDROBIN);}
+
+<INITIAL,C>"("                  {return(*yytext);}
+<INITIAL,C>")"                  {return(*yytext);}
+<INITIAL,C>","                  {return(*yytext);}
+<INITIAL,C>"#"                  {return ('#') ;} 
+
+<INITIAL,C>"{"                  {return(*yytext);}
+<INITIAL,C>"}"                  {return(*yytext);}
+
+<INITIAL,C>"["                  {return(*yytext);}
+<INITIAL,C>"]"                  {return(*yytext);}
+<INITIAL,C>"."                  {return(*yytext);}
+<INITIAL,C>"&"                  {return(*yytext);}
+<INITIAL,C>"*"                  {return(*yytext);}
+<INITIAL,C>"+"                  {return(*yytext);}
+<INITIAL,C>"-"                  {return(*yytext);}
+<INITIAL,C>"~"                  {return(*yytext);}
+<INITIAL,C>"!"                  {return(*yytext);}
+<INITIAL,C>"/"                  {return(*yytext);}
+<INITIAL,C>"%"                  {return(*yytext);}
+<INITIAL,C>"<"                  {return(*yytext);}
+<INITIAL,C>">"                  {return(*yytext);}
+<INITIAL,C>"^"                  {return(*yytext);}
+<INITIAL,C>"|"                  {return(*yytext);}
+<INITIAL,C>"?"                  {return(*yytext);}
+<INITIAL,C>":"                  {return(*yytext);}
+<INITIAL,C>";"                  {return(*yytext);}
+<INITIAL,C>"="                  {return(*yytext);}
+
+<INITIAL,C>"->"                 {RETURN_VAL(ARROW);}
+<INITIAL,C>"++"                 {RETURN_VAL(ICR);}
+<INITIAL,C>"--"                 {RETURN_VAL(DECR);}
+<INITIAL,C>"<<"                 {RETURN_VAL(LS);}
+<INITIAL,C>">>"                 {RETURN_VAL(RS);}//发生冲突了暂时去掉 SPL?WHY?lxx
+<INITIAL,C>"<="                 {RETURN_VAL(LE);}
+<INITIAL,C>">="                 {RETURN_VAL(GE);}
+<INITIAL,C>"=="                 {RETURN_VAL(EQ);}
+<INITIAL,C>"!="                 {RETURN_VAL(NE);}
+<INITIAL,C>"&&"                 {RETURN_VAL(ANDAND);}
+<INITIAL,C>"||"                 {RETURN_VAL(OROR);}
+<INITIAL,C>"*="                 {RETURN_VAL(MULTassign);}
+<INITIAL,C>"/="                 {RETURN_VAL(DIVassign);}
+<INITIAL,C>"%="                 {RETURN_VAL(MODassign);}
+<INITIAL,C>"+="                 {RETURN_VAL(PLUSassign);}
+<INITIAL,C>"-="                 {RETURN_VAL(MINUSassign);}
+<INITIAL,C>"<<="                {RETURN_VAL(LSassign);}
+<INITIAL,C>">>="                {RETURN_VAL(RSassign);}
+<INITIAL,C>"&="                 {RETURN_VAL(ANDassign);}
+<INITIAL,C>"^="                 {RETURN_VAL(ERassign);}
+<INITIAL,C>"|="                 {RETURN_VAL(ORassign);}
+<INITIAL,C>"..."                {RETURN_VAL(ELLIPSIS);}
+
 <INITIAL,C>{decimal_constant}    {  GetCoord(&yylval.tok,yytext);  
                                     yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(INTEGERconstant);}
@@ -79,30 +167,27 @@ Annotation       \/\/[^\n]*\n
 <INITIAL,C>{hex_constant}        {  GetCoord(&yylval.tok,yytext);
                                     yylval.n = int_constant(yytext,yylval.tok, TRUE, FALSE);
                                     RETURN_TOKEN(HEXconstant);}
-
 <INITIAL,C>{floating_constant}[^.]   {  yyless(yyleng-1);  /* 这一句写了等于没写,yytext 没变化*/
                                         GetCoord(&yylval.tok,yytext);
                                         yylval.n = float_constant(yytext,yylval.tok);
                                         RETURN_TOKEN(FLOATINGconstant);}
-<INITIAL,C>{any_white}+          {  debug("[lexer.l] any_white");  }
+                                                                            
+<INITIAL,C>{any_white}+          {}
 
 
-<INITIAL,C>int                  { PA_KEYWORD_RETURN(INT);}
 <INITIAL,C>{identifier}         { debug("identifier\n");
                                   GetCoord(&yylval.tok,yytext);  
                                   yylval.n = MakeIdCoord(UniqueString(yytext),yylval.tok);
-                         	        /*if (IsAType(yylval.n->u.id.text))
-								                    RETURN_TOKEN(TYPEDEFname);
-							                    else */ RETURN_TOKEN(IDENTIFIER); }
-<INITIAL,C>.*                    {  char tmp[20];
+                         	        RETURN_TOKEN(IDENTIFIER); }
+<INITIAL,C>.                    {  char tmp[20];
                                     CharToText(tmp, *yytext); //这一行暂且不用了
                                     SyntaxError("Unexpected character: %s \n", yytext); }    
 
 %%
 
 /*****第1步,获取文件名****/
-GLOBAL char *Filename;
 GLOBAL char *FileNames[MAX_FILES] = {(char*)"REPL"}; //默认的命令行动态输入输出就是 REPL
+GLOBAL char *Filename = FileNames[0];
 GLOBAL Bool CurrentIncludedp = FALSE;
 GLOBAL unsigned int CurrentFile = 0;
 GLOBAL void SetFile(const char *name, int line){
