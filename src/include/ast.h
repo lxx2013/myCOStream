@@ -6,6 +6,7 @@
 /* definition of Node data structure */
 typedef struct nodeStruct Node;
 typedef Node ChildNode;
+typedef List ChildList;
 
 typedef enum {
   /* expression nodes */

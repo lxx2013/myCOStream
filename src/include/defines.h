@@ -4,7 +4,11 @@
 
 #define GLOBAL
 #define PRIVATE static
+
 typedef int Bool;
+typedef void Generic;
+typedef void **GenericREF; 
+
 #define TRUE 1
 #define FALSE 0
 #define TAB_WIDTH  8

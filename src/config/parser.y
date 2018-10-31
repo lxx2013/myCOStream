@@ -32,8 +32,7 @@
 /*在 union 里声明 %token 可能有的类型*/
 %union{
     Node *n;
-    int num; //tag:v1.0.0 临时测试用的数据类型,目的是让这一次 make 能跑通
-    //List *L;
+    List *L;
     /*
     struct {
         TypeQual   tq;
@@ -80,23 +79,154 @@
 %token <tok> LSassign    RSassign                 /*   <<=     >>=             */
 %token <tok> ANDassign   ERassign     ORassign    /*   &=      ^=      |=      */
 
-%type <n>  basic.type.name
+/***************   复杂文法结构   **********************************/
+// %type <L> translation.unit external.definition
+// %type <n> function.definition
+// /****************************Define For SPL************************************/
+// /*for composite*/
+// %type <n> composite.definition
+// %type <n> composite.head composite.body.no.new.scope
+// %type <n> composite.head.inout composite.head.inout.member
+// %type <L> composite.head.inout.member.list
+// /*for composite.body */
+// %type <n> composite.body.param.opt
+// %type <L> composite.body.statement.list
+// /*for SPL compositestmt*/
+// %type <n> composite.body.operator
+// %type <n> operator.splitjoin operator.pipeline operator.add
+// /*for streamit filter*/
+// %type <n> operator.default.call
+// %type <n> split.statement join.statement
+// %type <n> duplicate.statement roundrobin.statement
+// /*for files filter*/
+// %type <n>  operator.file.writer
+// /*for operator body*/
+// %type <n> operator.selfdefine.body.init.opt operator.selfdefine.body.work  operator.selfdefine.body.window.list.opt
+// %type <L> operator.selfdefine.window.list
+// %type <n> operator.selfdefine.window  window.type
+// /*for splitjoin and pipeline statement*/
+// %type <L> splitjoinPipeline.statement.list
+// /****************************Define For SPL************************************/
+
+// %type <n> constant string.literal.list
+// %type <n> primary.expression postfix.expression unary.expression
+// %type <n> cast.expression multiplicative.expression additive.expression
+// %type <n> shift.expression relational.expression equality.expression
+// %type <n> AND.expression exclusive.OR.expression inclusive.OR.expression
+// %type <n> logical.AND.expression logical.OR.expression conditional.expression
+// %type <n> assignment.expression constant.expression expression.opt
+// %type <L> attributes.opt attributes attribute attribute.list
+// %type <n> attrib any.word
+
+// %type <n> initializer.opt initializer initializer.list
+// %type <n> bit.field.size.opt bit.field.size enumerator.value.opt
+
+// %type <n> costream.composite.statement statement labeled.statement expression.statement
+// %type <n> selection.statement iteration.statement jump.statement
+// %type <n> compound.statement compound.statement.no.new.scope
+
+// %type <n> basic.declaration.specifier basic.type.specifier
+// %type <n> type.name expression type.specifier declaration.specifier
+// %type <n> typedef.declaration.specifier typedef.type.specifier
+// %type <n> abstract.declarator unary.abstract.declarator
+// %type <n> postfixing.abstract.declarator array.abstract.declarator
+// %type <n> postfix.abstract.declarator old.function.declarator
+// %type <n> struct.or.union.specifier struct.or.union elaborated.type.name
+// %type <n> sue.type.specifier sue.declaration.specifier enum.specifier
+
+// /**********Define For SPL ********/
+// %type <n> stream.type.specifier
+// %type <L> stream.declaration.list
+// /**********Define For SPL ********/
+
+// %type <n> parameter.declaration
+// %type <n> identifier.declarator parameter.typedef.declarator
+// %type <n> declarator paren.typedef.declarator
+// %type <n> clean.typedef.declarator simple.paren.typedef.declarator
+// %type <n> unary.identifier.declarator paren.identifier.declarator
+// %type <n> postfix.identifier.declarator clean.postfix.typedef.declarator
+// %type <n> paren.postfix.typedef.declarator postfix.old.function.declarator
+// %type <n> struct.identifier.declarator struct.declarator
+
+// %type <L> declaration declaration.list declaring.list default.declaring.list
+// %type <L> argument.expression.list identifier.list statement.list
+// %type <L> parameter.type.list parameter.list
+// %type <L> struct.declaration.list struct.declaration struct.declaring.list
+// %type <L> struct.default.declaring.list enumerator.list
+// %type <L> old.function.declaration.list
+
+// %type <n> unary.operator assignment.operator
+// %type <n> identifier.or.typedef.name
+
+// %type <tq> type.qualifier type.qualifier.list declaration.qualifier.list
+// %type <tq> declaration.qualifier storage.class
+// %type <tq> pointer.type.qualifier pointer.type.qualifier.list
+// %type <L> operator.arguments
+// %type <n> operator.selfdefine.body
+// %type <n>  basic.type.name
 
 /*优先级标记*/
 %left '='
-%type <n> constant
 
-
+%start prog.start
 %locations
 
 %% 
-/****************************** 常量的文法符号声明 **********************************/
-test: test constant 
-    | constant
-    | test IF
-    | test basic.type.name
-    | test IDENTIFIER  {{PrintNode(stdout,$2,3); }}
-    | test '(' ')' {{ debug("()\n");}}
+/********************************************************************************
+*                            顶级    节点                                        *
+********************************************************************************/
+prog.start: translation.unit ;
+
+translation.unit:              
+          external.definition
+        | translation.unit external.definition
+        ;
+external.definition:           
+          declaration
+        //| function.definition
+	    //| composite.definition
+	    ;
+/********************************************************************************
+*                            一级    节点                                        *
+********************************************************************************/
+declaration:
+          declaring.list ';'
+        | default.declaring.list ';'
+        //| sue.declaration.specifier ';'
+        //| sue.type.specifier ';'
+        ;
+
+/********************************************************************************
+*                            二级    节点                                        *
+********************************************************************************/
+declaring.list: 
+          declaration.specifier 	declarator attributes.opt  initializer.opt
+		| type.specifier 			declarator attributes.opt initializer.opt  
+		| declaring.list 	',' 	declarator  attributes.opt initializer.opt
+        | declaration.specifier 	error attributes.opt initializer.opt  
+		| type.specifier 			error attributes.opt initializer.opt  
+		| declaring.list 	',' 	error
+        ;
+        
+/********************************************************************************
+*                            三级    节点                                        *
+********************************************************************************/
+declaration.list:               
+          declaration                  
+        | declaration.list declaration  
+        ;
+
+//composite.definition:						
+//	    composite.head composite.body.no.new.scope  
+//        ;
+
+
+
+
+
+/********************************************************************************
+*                            计算    节点                                        *
+********************************************************************************/
 constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         | INTEGERconstant       { PrintNode(stdout,$1,3); }
         | OCTALconstant         { PrintNode(stdout,$1,3); }
@@ -104,26 +234,7 @@ constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         ;
 basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   };
 
-/********************************************************************************
-*                                EXPRESSIONS                                    *
-********************************************************************************/
 
-// primary.expression:   IDENTIFIER           { $$ = $1; }
-//                     | constant
-                    // | string.literal.list
-                    // | '(' expression ')'    { if ($2->typ == Comma) $2->coord = $1;
-                    //                         $2->parenthesized = TRUE;
-                    //                         $$ = $2; }
-                    // /* GCC-inspired non ANSI-C extension */
-                    // | '(' lblock statement.list rblock ')'
-                    //     { if (ANSIOnly)
-                    //     SyntaxError("statement expressions not allowed with -ansi switch");
-                    //     $$ = MakeBlockCoord(NULL, NULL, GrabPragmas($3), $1, $4); }
-                    // | '(' lblock declaration.list statement.list rblock ')'
-                    //     { if (ANSIOnly)
-                    //     SyntaxError("statement expressions not allowed with -ansi switch");
-                    //     $$ = MakeBlockCoord(NULL, $3, GrabPragmas($4), $1, $5); }
-                    ;
 
 %%
 /* ----语法树结束----*/
