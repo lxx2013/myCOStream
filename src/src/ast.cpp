@@ -37,18 +37,11 @@ GLOBAL Node *MakeConstDoubleTextCoord(const char *text, double value, Coord coor
 	node->coord = coord;
 	return (node);
 }
-
-GLOBAL Node *MakeId(const char* text)
-{
-	Node *create = NewNode(Id);
-
-	create->u.id.text = text;
-	create->u.id.decl = NULL;
-	return(create);
-}
 GLOBAL Node *MakeIdCoord(const char* text, Coord coord)
 {
-	Node *create = MakeId(text);
+	Node *create = NewNode(Id);
+	create->u.id.text = text;
+	create->u.id.decl = NULL;
 	create->coord = coord;
 	return(create);
 }
