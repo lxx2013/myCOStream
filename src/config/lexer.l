@@ -2,7 +2,7 @@
     #pragma ident "c4.l,v 1.21 1995/05/11 18:54:14 rcm Exp" //将指定的字符串放在可执行文件的 .comment 部分。https://blog.csdn.net/lowfly_xy/article/details/5414041
     
     //#include <ctype.h>
-    #define DEBUG
+    //#define DEBUG
     #include "ast.h"
     #include "token.hh"
     #include "lexerUtils.h"

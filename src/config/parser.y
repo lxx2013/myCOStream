@@ -109,7 +109,7 @@
 // /****************************Define For SPL************************************/
 
 // %type <n> constant string.literal.list
-// %type <n> primary.expression postfix.expression unary.expression
+ %type <n> primary.expression postfix.expression unary.expression
 // %type <n> cast.expression multiplicative.expression additive.expression
 // %type <n> shift.expression relational.expression equality.expression
 // %type <n> AND.expression exclusive.OR.expression inclusive.OR.expression
@@ -178,8 +178,14 @@
 prog.start: translation.unit ;
 
 translation.unit:              
-          external.definition
+          external.definition 
+          {
+              debug("translation.unit :== external.definition\n");
+          }
         | translation.unit external.definition
+          {
+              debug("translation.unit :== translation.unit external.definition\n");
+          }
         ;
 external.definition:           
           declaration
@@ -191,7 +197,7 @@ external.definition:
 ********************************************************************************/
 declaration:
           declaring.list ';'
-        | default.declaring.list ';'
+        //| default.declaring.list ';'
         //| sue.declaration.specifier ';'
         //| sue.type.specifier ';'
         ;
@@ -200,32 +206,81 @@ declaration:
 *                            二级    节点                                        *
 ********************************************************************************/
 declaring.list: 
-          declaration.specifier 	declarator attributes.opt  initializer.opt
-		| type.specifier 			declarator attributes.opt initializer.opt  
+        //  declaration.specifier 	declarator attributes.opt  initializer.opt
+		| type.specifier 	declarator attributes.opt initializer.opt  
 		| declaring.list 	',' 	declarator  attributes.opt initializer.opt
-        | declaration.specifier 	error attributes.opt initializer.opt  
-		| type.specifier 			error attributes.opt initializer.opt  
-		| declaring.list 	',' 	error
+        //| declaration.specifier 	error attributes.opt initializer.opt  
+		//| type.specifier 			error attributes.opt initializer.opt  
+		//| declaring.list 	',' 	error
         ;
         
 /********************************************************************************
 *                            三级    节点                                        *
 ********************************************************************************/
-declaration.list:               
-          declaration                  
-        | declaration.list declaration  
-        ;
-
-//composite.definition:						
-//	    composite.head composite.body.no.new.scope  
-//        ;
-
-
-
-
 
 /********************************************************************************
-*                            计算    节点                                        *
+*                            左半边声明部分                                       *
+********************************************************************************/
+type.specifier:
+          basic.type.specifier
+        ;
+basic.type.specifier:
+          basic.type.name
+        ;
+basic.type.name:
+          INT
+        ;
+declarator:
+          identifier.declarator 
+        ;
+identifier.declarator:
+          paren.identifier.declarator 
+        ;
+paren.identifier.declarator:
+          IDENTIFIER 
+        ;
+/********************************************************************************
+*                            右半边表达式部分 : 条件表达式 | 计算表达式                 *
+********************************************************************************/
+attributes.opt:
+          /* empty */
+        ;
+initializer.opt:
+          /* empty */
+        | '=' initializer
+        ;
+initializer:
+          assignment.expression
+        ;
+assignment.expression:
+        //  conditional.expression
+        | unary.expression assignment.operator assignment.expression
+        {
+            debug ("assignment.expression ::= unary.expression assignment.operator assignment.expression\n");
+        }
+        ;
+/********************************************************************************
+*                            计算表达式 节点                                      *
+********************************************************************************/
+conditional.expression:         
+        //  logical.OR.expression
+        //| logical.OR.expression '?' expression ':' conditional.expression
+        ;
+unary.expression:               
+          postfix.expression
+        ;
+postfix.expression: 
+          primary.expression
+        ;
+primary.expression:            
+         IDENTIFIER           { $$ = $1; }
+        | constant
+        ;
+assignment.operator:
+          /* empty */
+        ;
+/********************************************************************************
+*                            基础    节点                                        *
 ********************************************************************************/
 constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         | INTEGERconstant       { PrintNode(stdout,$1,3); }
