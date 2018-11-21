@@ -132,7 +132,7 @@
 // %type <n> postfixing.abstract.declarator array.abstract.declarator
 // %type <n> postfix.abstract.declarator old.function.declarator
 // %type <n> struct.or.union.specifier struct.or.union elaborated.type.name
-// %type <n> sue.type.specifier sue.declaration.specifier enum.specifier
+// %type <n> enum.specifier
 
 // /**********Define For SPL ********/
 // %type <n> stream.type.specifier
@@ -198,8 +198,6 @@ external.definition:
 declaration:
           declaring.list ';'
         //| default.declaring.list ';'
-        //| sue.declaration.specifier ';'
-        //| sue.type.specifier ';'
         ;
 
 /********************************************************************************
