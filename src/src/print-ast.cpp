@@ -65,11 +65,9 @@ GLOBAL int PrintConstant(FILE *out, Node *c, Bool with_name)
   if(type == "Sint")
   {
     debug("\n I am Sint! My value is:%d",c->u.Const.value.i);   
-    PRINT_COORD(stdout,c->coord); 
   }
   else if(type == "Double"){
     debug("\n I am Double! My value is:%lf", c->u.Const.value.d);
-    PRINT_COORD(stdout, c->coord);
   }
   else{
     error("[%s:%d]Unrecognized constant type ", __FILE__, __LINE__);

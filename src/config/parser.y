@@ -180,15 +180,21 @@ prog.start: translation.unit ;
 translation.unit:              
           external.definition 
           {
+              line("Line:%-3d",1);
               debug("translation.unit :== external.definition\n");
           }
         | translation.unit external.definition
           {
+              line("Line:%-3d",1);
               debug("translation.unit :== translation.unit external.definition\n");
           }
         ;
 external.definition:           
           declaration
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("external.definition :== declaration\n");
+          }
         //| function.definition
 	    //| composite.definition
 	    ;
@@ -197,6 +203,10 @@ external.definition:
 ********************************************************************************/
 declaration:
           declaring.list ';'
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("declaration :== declaring.list ';'\n");
+          }
         //| default.declaring.list ';'
         ;
 
@@ -206,7 +216,15 @@ declaration:
 declaring.list: 
         //  declaration.specifier 	declarator attributes.opt  initializer.opt
 		| type.specifier 	declarator attributes.opt initializer.opt  
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("declaring.list :== type.specifier 	declarator attributes.opt initializer.opt \n");
+          }
 		| declaring.list 	',' 	declarator  attributes.opt initializer.opt
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("declaring.list ',' declarator  attributes.opt initializer.opt\n");
+          }
         //| declaration.specifier 	error attributes.opt initializer.opt  
 		//| type.specifier 			error attributes.opt initializer.opt  
 		//| declaring.list 	',' 	error
@@ -285,7 +303,10 @@ constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         | OCTALconstant         { PrintNode(stdout,$1,3); }
         | HEXconstant           { PrintNode(stdout,$1,3); }
         ;
-basic.type.name:  INT       { /*$$ = StartPrimType(Int_ParseOnly, $1);  */   };
+basic.type.name:  
+          INT       {  }
+        | DOUBLE    { $$ = StartPrimType(Double, $1);  }
+        ;
 
 
 

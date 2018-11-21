@@ -6,9 +6,14 @@
     #include "ast.h"
     #include "token.hh"
     #include "lexerUtils.h"
-
+    int yycolumn = 1;
+    #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno; \
+      yylloc.first_column = yycolumn; \
+      yylloc.last_column = yycolumn + yyleng - 1; \
+      yycolumn += yyleng;
+    
     char *line_start;
-
+  
     #undef YY_INPUT
     #define YY_INPUT(buf, result, max_size) \
         if (fgets(buf, max_size, yyin)==0) { result=0; } \

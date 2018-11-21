@@ -13,11 +13,6 @@ typedef struct coord {
 } Coord;
 GLOBAL extern Coord UnknownCoord;
 #define IsUnknownCoord(coord)  ((coord).file == UnknownCoord.file)
-#define PRINT_COORD(out, c) \
-{ if (PrintLineOffset) \
-	fprintf(out," Coord:{file:%s,line:%d,offset:%d}\n", FileNames[(c).file], (int)(c).line, \
-	(int)(c).offset); \
-	else fprintf(out, " Coord:{file:%s,line:%d}\n", FileNames[(c).file], (int) (c).line); }
-
+#define PRINT_COORD(out, c)  
 
 #endif
