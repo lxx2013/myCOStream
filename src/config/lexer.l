@@ -86,6 +86,7 @@ Annotation       \/\/[^\n]*\n
 <INITIAL,C>for                 {PA_KEYWORD_RETURN(FOR);}
 <INITIAL,C>if                  {PPPA_KEYWORD_RETURN(IF);}
 <INITIAL,C>while               {PA_KEYWORD_RETURN(WHILE);}
+<INITIAL,C>static               {PA_KEYWORD_RETURN(STATIC);}
 
 <INITIAL,C>composite		       {PA_KEYWORD_RETURN(COMPOSITE);}
 <INITIAL,C>input			         {PA_KEYWORD_RETURN(INPUT);}

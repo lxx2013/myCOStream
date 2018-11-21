@@ -1,5 +1,6 @@
 /*这个文件用于编写 输出抽象语法树 所用的函数*/
 #include <ctype.h>
+#define DEBUG
 #include "print-ast.h"
 #include <stdio.h>
 #include <string.h>
@@ -64,10 +65,10 @@ GLOBAL int PrintConstant(FILE *out, Node *c, Bool with_name)
   std::string type = std::string(c->u.Const.type); 
   if(type == "Sint")
   {
-    debug("\n I am Sint! My value is:%d",c->u.Const.value.i);   
+    debug("I am Sint! My value is:%d\n",c->u.Const.value.i);   
   }
   else if(type == "Double"){
-    debug("\n I am Double! My value is:%lf", c->u.Const.value.d);
+    debug("I am Double! My value is:%lf\n", c->u.Const.value.d);
   }
   else{
     error("[%s:%d]Unrecognized constant type ", __FILE__, __LINE__);

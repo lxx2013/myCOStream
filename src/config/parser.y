@@ -163,7 +163,7 @@
 // %type <tq> pointer.type.qualifier pointer.type.qualifier.list
 // %type <L> operator.arguments
 // %type <n> operator.selfdefine.body
-// %type <n>  basic.type.name
+%type <n>  basic.type.name
 
 /*优先级标记*/
 %left '='
@@ -214,7 +214,11 @@ declaration:
 *                            二级    节点                                        *
 ********************************************************************************/
 declaring.list: 
-        //  declaration.specifier 	declarator attributes.opt  initializer.opt
+          declaration.specifier 	declarator attributes.opt  initializer.opt
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("declaring.list :== declaration.specifier 	declarator attributes.opt  initializer.opt \n");
+          }
 		| type.specifier 	declarator attributes.opt initializer.opt  
           {
               line("Line:%-3d",@1.first_line);
@@ -235,8 +239,24 @@ declaring.list:
 ********************************************************************************/
 
 /********************************************************************************
-*                            左半边声明部分                                       *
+*                        左半边声明部分 - 需要大量删减, 预计只保留 int 和 const double *
 ********************************************************************************/
+declaration.specifier:
+          basic.declaration.specifier
+          // 或 typedef 和 sue 这种停止支持的
+        ; 
+basic.declaration.specifier:
+          basic.type.specifier storage.class
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("basic.declaration.specifier :== basic.type.specifier storage.class \n");
+          }
+        | basic.declaration.specifier basic.type.name
+          {
+              line("Line:%-3d",@1.first_line);
+              debug("basic.declaration.specifier :== basic.declaration.specifier basic.type.name \n");
+          }
+        ;
 type.specifier:
           basic.type.specifier
         ;
@@ -245,6 +265,7 @@ basic.type.specifier:
         ;
 basic.type.name:
           INT
+        | DOUBLE
         ;
 declarator:
           identifier.declarator 
@@ -272,6 +293,7 @@ assignment.expression:
         //  conditional.expression
         | unary.expression assignment.operator assignment.expression
         {
+            line("Line:%-3d",@1.first_line);
             debug ("assignment.expression ::= unary.expression assignment.operator assignment.expression\n");
         }
         ;
@@ -303,9 +325,8 @@ constant: FLOATINGconstant      { PrintNode(stdout,$1,3); }
         | OCTALconstant         { PrintNode(stdout,$1,3); }
         | HEXconstant           { PrintNode(stdout,$1,3); }
         ;
-basic.type.name:  
-          INT       {  }
-        | DOUBLE    { $$ = StartPrimType(Double, $1);  }
+storage.class:
+          STATIC {}
         ;
 
 
