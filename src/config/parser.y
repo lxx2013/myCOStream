@@ -79,6 +79,7 @@
 %token <tok> LSassign    RSassign                 /*   <<=     >>=             */
 %token <tok> ANDassign   ERassign     ORassign    /*   &=      ^=      |=      */
 
+
 /***************   复杂文法结构   **********************************/
 // %type <L> translation.unit external.definition
 // %type <n> function.definition
@@ -163,11 +164,23 @@
 // %type <tq> pointer.type.qualifier pointer.type.qualifier.list
 // %type <L> operator.arguments
 // %type <n> operator.selfdefine.body
-%type <n>  basic.type.name
+%type <tok>  basic.type.name
 
 /*优先级标记*/
 %left '='
+%left OROR
+%left ANDAND
+%left '|'
+%left '^'
+%left '&'
+%left EQ NE
+%left '<' '>' LE GE
+%left LS RS 
+%left '-' '+'
+%left '*' '/' '%'
 
+%left ')' ']'
+%right '(' '['
 %start prog.start
 %locations
 
@@ -290,20 +303,37 @@ initializer:
           assignment.expression
         ;
 assignment.expression:
-        //  conditional.expression
-        | unary.expression assignment.operator assignment.expression
-        {
+          exp
+          {
             line("Line:%-3d",@1.first_line);
-            debug ("assignment.expression ::= unary.expression assignment.operator assignment.expression\n");
-        }
+            debug ("assignment.expression ::= exp\n");
+          }
+        
+        ;
+exp:    IDENTIFIER      { line("Line:%-3d",@1.first_line);debug ("exp ::= IDENTIFIER\n");}
+        | constant      { line("Line:%-3d",@1.first_line);debug ("exp ::= constant\n");}
+        | exp '+' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp + exp\n");}
+        | exp '-' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp - exp\n");}
+        | exp '*' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp * exp\n");}
+        | exp '/' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp / exp\n");}
+        | exp '%' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp %% exp\n");}
+        | exp OROR exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp || exp\n");}
+        | exp ANDAND exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp && exp\n");}
+        | exp '|' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp | exp\n");}
+        | exp '&' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp & exp\n");}
+        | exp '^' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp ^ exp\n");}
+        | exp LS exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp << exp\n");}
+        | exp RS exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp >> exp\n");}
+        | exp '<' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp < exp\n");}
+        | exp '>' exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp > exp\n");}
+        | exp LE exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp <= exp\n");}
+        | exp GE exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp >= exp\n");}
+        | exp EQ exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp == exp\n");}
+        | exp NE exp   { line("Line:%-3d",@1.first_line);debug ("exp ::= exp != exp\n");}
         ;
 /********************************************************************************
-*                            计算表达式 节点                                      *
+*                            计算表达式 - unary表达式                                *
 ********************************************************************************/
-conditional.expression:         
-        //  logical.OR.expression
-        //| logical.OR.expression '?' expression ':' conditional.expression
-        ;
 unary.expression:               
           postfix.expression
         ;
@@ -311,11 +341,20 @@ postfix.expression:
           primary.expression
         ;
 primary.expression:            
-         IDENTIFIER           { $$ = $1; }
+         IDENTIFIER          
         | constant
         ;
-assignment.operator:
-          /* empty */
+assignment.operator: //全都是类似于 = 或 += 的赋值操作符
+          '='             
+          {
+            line("Line:%-3d",@1.first_line);
+            debug ("assignment.operator ::= =\n");
+          }
+        | MULTassign     
+          {
+            line("Line:%-3d",@1.first_line);
+            debug ("assignment.operator ::= +=\n");
+          }
         ;
 /********************************************************************************
 *                            基础    节点                                        *
